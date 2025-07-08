@@ -1,0 +1,68 @@
+/* Mega Menu Container - the first submenu */
+.mega-parent .mega-menu {
+  display: none;
+  opacity: 0;
+}
+
+.mega-parent:hover .mega-menu {
+  display: flex !important; 
+  flex-direction: row !important;
+  gap: 20px;
+  padding: 20px;
+  list-style: none;
+  opacity: 1;
+  background-color: #dddddd;
+}
+
+.sub-menu-item {
+  display: flex !important;
+  flex-direction: column;
+  position: static !important;
+  visibility: visible !important; 
+  opacity: 1 !important;          
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mega-menu > li {
+  flex: 1;
+}
+
+.mega-menu > li > a:hover {
+  text-decoration: none;
+}
+
+.mega-menu li:hover a {
+    font-weight: normal !important;
+    text-decoration: underline;
+}
+
+.mega-menu > li > a {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.mega-menu > li:hover > a {
+  font-weight: bold;
+}
+
+.mega-menu > li > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #dddddd;
+}
+
+.mega-menu > li > ul > li {
+  margin-bottom: 5px;
+}
+
+.mega-menu, 
+.sub-menu-item, 
+.sub-menu {
+  border: none !important;
+  box-shadow: none !important;
+}
