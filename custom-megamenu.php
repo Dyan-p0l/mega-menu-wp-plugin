@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Plugin Name: Custom Mega Menu
 Description: A custom plugin that turns the existing menu into a mega menu
 Version: 1.0
@@ -10,10 +10,122 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-add_action('wp_enqueue_scripts', 'custom_mega_menu_assets');
+add_action('admin_enqueue_scripts', 'custom_mm_admin_scripts');
+function custom_mm_admin_scripts ($hook) {
+    if ($hook !== 'nav-menus.php') return;
+    wp_enqueue_script('custom_mm_admin', plugin_dir_url(__FILE__) . 'js/custom_mm_admin.js', array('jquery', 'jquery-ui-dialog'), '1.0', true);
+    wp_enqueue_style('my_admin_style', plugin_dir_url(__FILE__) . 'css/custom-mm-admin-style.css');
+    wp_enqueue_style('wp-jquery-ui-dialog');
+}
+
+add_action('admin_footer', 'custom_mm_modal_footer');
+function custom_mm_modal_footer () {
+    ?>
+    <div id="mega-menu-popup" style="display:none;">
+        <div class="draggable-wrapper">
+            <ul id="sortable-submenus"></ul>
+        </div>
+        <p style="text-align: right;">
+            <button class="button button-primary" id="save-mega-menu">Save</button>
+            <button class="button" id="close-mega-menu">Cancel</button>
+        </p>
+    </div>
+    <?php
+}
+
+add_action('wp_enqueue_scripts', 'custom_mega_menu_assets');    
 function custom_mega_menu_assets() {
     wp_enqueue_style('my-mega-menu-style', plugin_dir_url(__FILE__) . 'css/custom-megamenu-style.css');
 }
+
+add_action('wp_nav_menu_item_custom_fields', 'custom_add_mega_menu_checkbox', 10, 4);
+
+function custom_add_mega_menu_checkbox($item_id, $item, $depth, $args) {
+    $value = get_post_meta($item_id, '_custom_mega_menu', true);
+    ?>
+    <p class="field-custom description description-wide">
+        <label for="edit-menu-item-mega-menu-<?php echo esc_attr($item_id); ?>">
+            <input type="checkbox" id="edit-menu-item-mega-menu-<?php echo esc_attr($item_id); ?>"
+                   name="menu-item-mega-menu[<?php echo esc_attr($item_id); ?>]" 
+                   value="1" <?php checked($value, '1'); ?> />
+            Make this menu a Mega Menu
+        </label>
+    </p>
+    <?php
+}
+
+
+add_action('wp_nav_menu_item_custom_fields', 'custom_add_config_button', 10, 3);
+
+function custom_add_config_button ($item_id, $depth, $args) {
+    ?>
+    <button type="button" class="configure_mega_menu_btn" data-item-id="<?php echo esc_attr($item_id); ?>" style="color: #ffffff; background-color:rgb(5, 70, 94); font-weight: bold; border-color:rgb(1, 13, 44); cursor: pointer">
+        CONFIGURE MEGA-MENU
+    </button>
+    <?php
+}
+
+
+add_action('wp_update_nav_menu_item', 'custom_save_mega_menu_checkbox', 10, 3);
+
+function custom_save_mega_menu_checkbox($menu_id, $menu_item_db_id, $args) {
+    if (isset($_POST['menu-item-mega-menu'][$menu_item_db_id])) {
+        update_post_meta($menu_item_db_id, '_custom_mega_menu', 1);
+    } else {
+        delete_post_meta($menu_item_db_id, '_custom_mega_menu');
+    }
+}
+
+
+
+
+add_action('wp_ajax_save_submenu_order', function() {
+    if (!current_user_can('edit_theme_options')) wp_send_json_error('No permission');
+
+    $order = $_POST['order'] ?? [];
+    foreach ($order as $index => $item_id) {
+        wp_update_post([
+            'ID' => intval($item_id),
+            'menu_order' => $index
+        ]);
+    }
+
+    wp_send_json_success('Order saved.');
+});
+
+
+
+add_action('wp_ajax_get_submenu_items', function() {
+    if (!current_user_can('edit_theme_options')) wp_send_json_error('Unauthorized');
+
+    $locations = get_nav_menu_locations();
+    $menu_id = $locations['aux_nav'] ?? 0;
+
+    $parent_id = intval($_POST['parent_id'] ?? 0);
+    if (!$parent_id) wp_send_json_error('Missing parent_id');
+
+    $menu_items = wp_get_nav_menu_items($menu_id, array('orderby' => 'menu_order')); 
+
+    $filtered = array_filter($menu_items, function($item) use ($parent_id) {
+        return intval($item->menu_item_parent) === $parent_id;
+    });
+
+    usort($filtered, function($a, $b) {
+        return $a->menu_order - $b->menu_order;
+    });
+
+    $result = array_map(function($item) {
+        return [
+            'ID' => $item->ID,
+            'title' => $item->title
+        ];
+    }, $filtered);
+
+    wp_send_json_success($result);
+});
+
+
+
 
 class My_Mega_Menu_Walker extends Walker_Nav_Menu {
     function start_lvl ( &$output, $depth = 0, $args = null ) {
@@ -33,7 +145,9 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
     function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $classes = empty($item->classes) ? array() : (array) $item->classes;
 
-        if (in_array('menu-item-has-children', $classes) && $depth === 0) {
+        $is_mega = get_post_meta($item->ID, '_custom_mega_menu', true);
+
+        if ( $is_mega && $depth === 0 ) {
             $classes[] = 'mega-parent';  
         }
         
