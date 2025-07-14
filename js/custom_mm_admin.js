@@ -15,19 +15,22 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     const items = response.data;
-                    items.forEach(function(item) {
-                        $('#sortable-submenus').append(`
-                            <li class="ui-state-default" data-id="${item.ID}">
-                                <span class="dashicons dashicons-menu"></span> ${item.title}
-                            </li>
-                        `);
-                    });
+                        items.forEach(function(item) {
+                            const image = item.image ? `<img src="${item.image}" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">` : '';
+                            const icon = item.icon ? `<i class="${item.icon}" style="margin-right: 5px;"></i>` : '';
+
+                            $('#sortable-submenus').append(`
+                                <li class="ui-state-default" data-id="${item.ID}">
+                                    <span class="dashicons dashicons-menu"></span> ${image}${icon}${item.title}
+                                </li>
+                            `);
+                        });
 
                     $('#sortable-submenus').sortable();
 
                     $('#mega-menu-popup').dialog({
                         modal: true,
-                        width: 970,
+                        width: 1070,
                         title: 'Configure Mega Menu'
                     });
                 }
@@ -53,6 +56,26 @@ jQuery(document).ready(function($) {
                 $('#mega-menu-popup').dialog('close');
             }
         });
+    });
+
+    $('.select-menu-image').on('click', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const inputID = button.data('input-id');
+        const inputField = $('#' + inputID);
+
+        const frame = wp.media({
+            title: 'Select or Upload Image',
+            button: { text: 'Use this image' },
+            multiple: false
+        });
+
+        frame.on('select', function() {
+            const attachment = frame.state().get('selection').first().toJSON();
+            inputField.val(attachment.url);
+        });
+
+        frame.open();
     });
 
     $('#close-mega-menu').on('click', function() {
