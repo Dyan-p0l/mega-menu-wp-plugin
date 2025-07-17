@@ -12,9 +12,12 @@ function custom_mega_menu_assets() {
     $bg_hover = get_option('custom_megamenu_bg_color:hover', '#000000');
     $text_hover = get_option('custom_megamenu_text_color:hover', '#ffffff');
     $custom_css = "
+
         .show-for-large {
             background-color: {$bg} !important;
             color: {$text} !important;
+            padding: 0 ! important;
+            transform: none !important;
         }
         .show-for-large li a {
             color: {$text} !important;
@@ -40,7 +43,10 @@ function custom_mega_menu_assets() {
         .mega-menu li:hover>a {
             background-color: {$bg_hover} !important;
         }
-
+        .dropdown:hover>li>a {
+            background-color: {$bg_hover} !important;
+            color: {$text_hover} !important;
+        }
         .sub-menu-item li:hover a {
             background-color: {$bg_hover} !important;
             color: {$text_hover} !important;

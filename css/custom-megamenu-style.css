@@ -1,18 +1,27 @@
-/* Mega Menu Container - the first submenu */
+*{
+  transform: none !important;
+  transition: none !important;
+}
+
 .mega-parent .mega-menu {
   display: none;
   opacity: 0;
+}
+
+.mega-parent {
+  position: relative !important;
 }
 
 .mega-parent:hover .mega-menu {
   display: flex !important; 
   flex-direction: row !important;
   gap: 20px;
-  padding: 20px;
+  padding: 5px;
   list-style: none;
   opacity: 1;
 }
 
+.mega-parent,
 .mega-menu li a,
 .mega-menu li a:hover {
   transform: none !important;     
@@ -72,8 +81,7 @@
 
 .dropdown li a,
 .dropdown li a:hover {
-  transform: none !important;
-  font-size: inherit !important;           
+  transform: none !important;       
   border: none !important;         
   transition: none !important;     
 }
