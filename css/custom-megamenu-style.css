@@ -12,6 +12,14 @@
   position: relative !important;
 }
 
+ul.mega-menu li.menu-item a {
+  font-size: 13.6px !important;
+}
+
+ul.mega-menu li:hover a {
+  font-size: 13.6px !important;
+}
+
 .mega-parent:hover .mega-menu {
   display: flex !important; 
   flex-direction: row !important;
@@ -19,6 +27,19 @@
   padding: 5px;
   list-style: none;
   opacity: 1;
+  position: absolute !important;
+  top: 100% !important;
+}
+
+.mega-parent a {
+  font-size: 13.6px !important;
+}
+
+.mega-parent:hover a {
+  transform: none !important;
+  transition: none !important;
+  border: none !important;
+  font-size: 13.6px !important;
 }
 
 .mega-parent,
@@ -49,6 +70,7 @@
 .sub-menu-item li:hover a {
     font-weight: normal !important;
     text-decoration: underline;
+    font-size: 13.6px !important;
 }
 
 .mega-menu > li > a {

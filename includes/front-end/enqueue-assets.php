@@ -18,10 +18,11 @@ function custom_mega_menu_assets() {
             color: {$text} !important;
             padding: 0 ! important;
             transform: none !important;
+            position: relative !important;
         }
         .show-for-large li a {
             color: {$text} !important;
-        }
+        }   
         .mega-parent {
             background-color: {$bg} !important;
             color: {$text} !important;
@@ -33,6 +34,7 @@ function custom_mega_menu_assets() {
         .mega-menu {
             background-color: {$bg} !important;
             color: {$text} !important;
+            z-index: 9999 !important;   
         }
         .mega-menu li {
             background-color: {$bg} !important;
@@ -43,7 +45,7 @@ function custom_mega_menu_assets() {
         .mega-menu li:hover>a {
             background-color: {$bg_hover} !important;
         }
-        .dropdown:hover>li>a {
+        .dropdown>li:hover>a {
             background-color: {$bg_hover} !important;
             color: {$text_hover} !important;
         }
