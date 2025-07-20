@@ -26,6 +26,7 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
         $is_mega = get_post_meta($item->ID, '_custom_mega_menu', true);
         $image_url = get_post_meta($item->ID, '_custom_menu_image', true);
         $icon_class = get_post_meta($item->ID, '_custom_menu_icon', true);
+        $indent = str_repeat("\t", $depth);
 
         if ($depth === 0) {
             $classes[] = 'mega-parent';  
@@ -68,14 +69,45 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
             $matches = [];
             preg_match_all('/<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/', $page->post_content, $matches, PREG_SET_ORDER);
 
+            // $matches_label = [];
+            // preg_match_all('', $page->post_content, $matches_label, PREG_SET_ORDER);
+
             if (!empty($matches)) {
-                $output .= '<ul class="page-sub-menu-item">';
+
+                if ($depth === 0) {
+                    $output .= "\n$indent<div class=\"mega-menu-wrapper\">\n";
+                    $output .= "$indent\t<ul class=\"mega-menu\">\n";
+                    $output .= "$indent\t\t<li class=\"menu-item\">LINKS FROM PAGE</li>\n";
+                }
+                else {
+                    $output .= '<ul class="page-sub-menu-item">';
+                }
+                
                 foreach ($matches as $match) {
                     $link = esc_url($match[1]);
-                    $text = esc_html($match[2]);
+                    $text = trim($match[2]);
+
+                    if (
+                        stripos($text, 'edit') !== false ||
+                        stripos($link, 'wp-admin') !== false ||
+                        stripos($match[0], 'tablepress-edit-link') !== false ||
+                        stripos($text, 'http') !== false
+                    ){
+                        continue;
+                    }
+
+                    $text = esc_html($text);
                     $output .= "<li ><a href='{$link}'>{$text}</a></li>";
                 }
-                $output .= '</ul>';
+
+                if ($depth === 0) {
+                    $output .= "$indent\t\t</li>\n";
+                    $output .= "$indent\t</ul>\n";
+                    $output .= "$indent</div>\n";
+                }else{
+                    $output .= '</ul>';
+                }
+
             }
         }
     }
