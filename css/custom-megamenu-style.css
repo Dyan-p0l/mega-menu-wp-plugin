@@ -29,6 +29,7 @@ ul.mega-menu li:hover a {
   opacity: 1;
   position: absolute !important;
   top: 100% !important;
+  height: 500px;
 }
 
 .mega-parent a {
@@ -106,4 +107,21 @@ ul.mega-menu li:hover a {
   transform: none !important;       
   border: none !important;         
   transition: none !important;     
+}
+
+/* .mega-menu-content {
+    display: none;
+} */
+
+.mega-parent:hover .mega-menu-content {
+    overflow: auto;
+}
+
+.mega-menu-wrapper img {
+    max-width: 100%;
+    height: auto;
+}
+
+.mega-menu-wrapper h2 {
+    display: none !important;
 }
