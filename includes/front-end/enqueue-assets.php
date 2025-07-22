@@ -24,7 +24,6 @@ function custom_mega_menu_assets() {
             background-color: {$bg} !important;
             color: {$text} !important;
         }
-
         .show-for-large {
             background-color: {$bg} !important;
             color: {$text} !important;
@@ -46,10 +45,15 @@ function custom_mega_menu_assets() {
         .mega-menu {
             background-color: {$bg} !important;
             color: {$text} !important;
-            z-index: 9999 !important;   
+            z-index: 9999 !important;  
+            width: 300px !important; 
+        }
+        .mega-menu-wrapper {
+            background-color: {$bg} !important;
         }
         .mega-menu li {
             background-color: {$bg} !important;
+
         }
         .mega-menu a {
             color: {$text} !important;
