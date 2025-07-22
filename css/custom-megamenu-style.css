@@ -13,27 +13,26 @@
 }
 
 ul.mega-menu li.menu-item a {
-  font-size: 13.6px !important;
-}
-
-ul.mega-menu li:hover a {
-  font-size: 13.6px !important;
+  font-size: 16px !important;
 }
 
 .mega-parent:hover .mega-menu {
   display: flex !important; 
-  flex-direction: row !important;
-  gap: 20px;
+  flex-direction: column !important;
   padding: 5px;
   list-style: none;
   opacity: 1;
-  position: absolute !important;
-  top: 100% !important;
-  height: 500px;
+  min-height: 300px;
+  height: auto;
 }
 
-.mega-parent a {
-  font-size: 13.6px !important;
+.mega-menu-wrapper {
+  position: absolute;
+  top: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important; /* This makes children same height */
+  z-index: 999;
 }
 
 .mega-parent:hover a {
@@ -53,32 +52,47 @@ ul.mega-menu li:hover a {
   transition: none !important;     
 }
 
-.sub-menu-item {
-  display: flex !important;
-  flex-direction: column;
-  position: static !important;
+.ul.sub-menu-item {
+  display: none;
+  opacity: 0;
+}
+
+ul.sub-menu-item.visible {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
   visibility: visible !important; 
   opacity: 1 !important;          
   background: none;
-  padding: 0;
-  margin: 0;
+  position: static;
+  padding: 30px;
+  margin-top: 40px;
 }
 
-.mega-menu > li {
-  flex: 1;
+ul.sub-menu-item.visible a {
+  font-size: 16px !important;
 }
 
-.sub-menu-item li:hover a {
-    font-weight: normal !important;
+ul.sub-menu-item.visible li:hover a {
+  font-size: 16.5px !important;
+  background-color: transparent !important;
+}
+
+.sub-menu-item li a ,  .sub-menu-item li:hover a{
+    font-weight: bold !important;
     text-decoration: underline;
     font-size: 13.6px !important;
 }
 
-.mega-menu > li > a {
+.mega-menu li a {
   display: block;
   font-weight: bold;
   margin-bottom: 10px;
   text-decoration: none;
+  width: 100% !important;
+}
+
+.mega-menu li {
+  padding-left: 10px !important;
 }
 
 .mega-menu > li:hover > a {
@@ -91,9 +105,9 @@ ul.mega-menu li:hover a {
   margin: 0;
 }
 
-.mega-menu > li > ul > li {
+/* .mega-menu > li > ul > li {
   margin-bottom: 5px;
-}
+} */
 
 .mega-menu, 
 .sub-menu-item, 
@@ -109,12 +123,11 @@ ul.mega-menu li:hover a {
   transition: none !important;     
 }
 
-/* .mega-menu-content {
-    display: none;
-} */
-
 .mega-parent:hover .mega-menu-content {
     overflow: auto;
+    position: absolute !important;
+    top: 100% !important;
+    height: auto;
 }
 
 .mega-menu-wrapper img {
@@ -124,4 +137,73 @@ ul.mega-menu li:hover a {
 
 .mega-menu-wrapper h2 {
     display: none !important;
+}
+
+.mega-content-container {
+  display: none;
+}
+
+.mega-parent:hover .mega-content-container {
+    display: flex !important;
+    flex-direction: row !important;
+    background-color: rgb(19, 18, 18);
+    min-width: 800px;
+    position: relative;
+}
+
+li.menu-item:hover ul.sub-menu-item li{
+  display: block;
+}
+
+ul.sub-menu-item li {
+    display: none; 
+    min-width: 200px;
+    z-index: 999;
+    background-color: transparent;
+}
+
+.mega-parent:hover .menu-item-img {
+  height: 180px;
+  width: 180px;
+}
+
+.mega-content-left  {
+  width: 70%;
+  background-color: aqua;
+}
+
+.mega-content-right {
+  width: 30%;
+  background-color: aquamarine;
+}
+
+.item-title {
+  font-weight: bold;
+}
+
+.mega-content-text {
+  display: none;
+} 
+
+.mega-parent:hover .mega-content-text {
+  display: block;
+  width: 100%;
+  padding: 30px;
+  height: 40%;
+  text-align: justify;
+}
+
+.mega-content-text {
+  display: none;
+}
+
+.original-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  visibility: hidden !important;
+  pointer-events: none !important
 }

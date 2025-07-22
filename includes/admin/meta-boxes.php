@@ -1,7 +1,7 @@
 <?php
 
 add_action('wp_nav_menu_item_custom_fields', 'custom_add_mega_menu_checkbox', 10, 4);
-function custom_add_mega_menu_checkbox($item_id, $item, $depth, $args) {
+function custom_add_mega_menu_checkbox($item_id, $item, $depth, $args) { 
     $value = get_post_meta($item_id, '_custom_mega_menu', true);
     ?>
     <p class="field-custom description description-wide">
@@ -15,15 +15,24 @@ function custom_add_mega_menu_checkbox($item_id, $item, $depth, $args) {
     <?php
 }
 
-add_action('wp_nav_menu_item_custom_fields', 'custom_add_config_button', 10, 3);
-function custom_add_config_button ($item_id, $depth, $args) {
-    $is_mega = get_post_meta($item_id, '_custom_mega_menu', true);
+add_action('wp_nav_menu_item_custom_fields', 
+function ($item_id, $depth, $item,$args) {
+
+    // $is_mega = get_post_meta($item_id, '_custom_mega_menu', true);
+
+    if ($depth === 1) return;
+    
     ?>
-    <button type="button" class="configure_mega_menu_btn" data-item-id="<?php echo esc_attr($item_id); ?>" data-is-mega="<?php echo $is_mega ? '1' : '0'; ?>" style="color: #ffffff; background-color:rgb(5, 70, 94); font-weight: bold; border-color:rgb(1, 13, 44); cursor: pointer">
-        CONFIGURE MEGA-MENU
-    </button>
+    <p class="description description-wide">
+        <label>
+            <button type="button" class="configure_mega_menu_btn" data-item-id="<?php echo esc_attr($item_id); ?>" style="color: #ffffff; background-color:rgb(5, 70, 94); font-weight: bold; border-color:rgb(1, 13, 44); cursor: pointer">
+                CONFIGURE MEGA-MENU
+            </button>
+        </label>
+    </p>
+
     <?php
-}
+}, 20, 4);
 
 add_action('wp_update_nav_menu_item', 'custom_save_mega_menu_checkbox', 10, 3);
 function custom_save_mega_menu_checkbox($menu_id, $menu_item_db_id, $args) {
@@ -37,6 +46,9 @@ function custom_save_mega_menu_checkbox($menu_id, $menu_item_db_id, $args) {
 add_action('wp_nav_menu_item_custom_fields', function($item_id, $item, $depth, $args) {
     $image_url = get_post_meta($item_id, '_custom_menu_image', true);
     $icon_class = get_post_meta($item_id, '_custom_menu_icon', true);
+
+    if ($depth === 0) return;
+
     ?>
     <p class="description description-wide">
         <label for="menu-item-image-<?php echo $item_id; ?>">
@@ -53,6 +65,26 @@ add_action('wp_nav_menu_item_custom_fields', function($item_id, $item, $depth, $
     <?php
 }, 20, 4);
 
+
+add_action('wp_nav_menu_item_custom_fields', function($item_id, $item, $depth, $args) {
+
+    if ($depth === 0) return;
+
+    $text_content = get_post_meta($item_id, '_custom_menu_text', true);
+    ?>
+    <p class="description description-wide">
+        <label for="menu-item-text-<?php echo $item_id; ?>">        
+            Enter a description text:<br>
+            <textarea id="menu-item-text-<?php echo $item_id; ?>"
+                name="menu-item-text[<?php echo $item_id; ?>]"
+                class="widefat custom-text-content"
+                style="min-height: 200px; min-width: 200px;"><?php echo esc_textarea($text_content); ?>
+            </textarea>
+        </label>
+    </p>
+    <?php
+}, 20, 4);  
+
 add_action('wp_update_nav_menu_item', function($menu_id, $menu_item_db_id, $args) {
     if (isset($_POST['menu-item-image'][$menu_item_db_id])) {
         update_post_meta($menu_item_db_id, '_custom_menu_image', sanitize_text_field($_POST['menu-item-image'][$menu_item_db_id]));
@@ -61,4 +93,9 @@ add_action('wp_update_nav_menu_item', function($menu_id, $menu_item_db_id, $args
     if (isset($_POST['menu-item-icon'][$menu_item_db_id])) {
         update_post_meta($menu_item_db_id, '_custom_menu_icon', sanitize_text_field($_POST['menu-item-icon'][$menu_item_db_id]));
     }
+    if (isset($_POST['menu-item-text'][$menu_item_db_id])) {
+        update_post_meta($menu_item_db_id, '_custom_menu_text', sanitize_textarea_field($_POST['menu-item-text'][$menu_item_db_id]));
+    }
+
 }, 20, 3);
+
