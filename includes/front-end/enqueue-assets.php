@@ -18,6 +18,8 @@ function custom_mega_menu_assets() {
     $text = get_option('custom_megamenu_text_color', '#000000');
     $bg_hover = get_option('custom_megamenu_bg_color:hover', '#000000');
     $text_hover = get_option('custom_megamenu_text_color:hover', '#ffffff');
+    $submenu_bg_hover = get_option('custom_submenu_bg_color:hover', '#000000');
+    $submenu_text_hover = get_option('custom_submenu_text_color:hover', '#ffffff');
     $custom_css = "
 
         .mega-content-container {
@@ -59,7 +61,12 @@ function custom_mega_menu_assets() {
             color: {$text} !important;
         }
         .mega-menu li:hover>a {
-            background-color: {$bg_hover} !important;
+            background-color: {$submenu_bg_hover} !important;
+            color: {$submenu_text_hover} !important;
+        }
+        .mega-menu li.hovered>a {
+            background-color: {$submenu_bg_hover} !important;
+            color: {$submenu_text_hover} !important;
         }
         .dropdown>li:hover>a {
             background-color: {$bg_hover} !important;

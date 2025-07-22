@@ -34,7 +34,7 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
             $classes[] = 'mega-parent';  
         }
 
-        if (in_array('menu-item-has-children', $classes) && $depth === 1) {
+        if (in_array('menu-item', $classes) && $depth === 1) {
             $classes[] = 'sub-menu';  
         }
         

@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const itemTitle = document.querySelectorAll('.item-title');
   const contentContainer = document.querySelector('.mega-content-container');
   const parents = document.querySelectorAll('.sub-menu');
+  
 
   let hoveredContainer = true;
   let activeMegaId = null;
+  let parentHovered = false;
+  let lastHoveredParent = null;
 
   images.forEach(img => {
     const container = img.closest('.mega-parent')?.querySelector('.mega-content-right');
@@ -73,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   contentContainer.addEventListener('mouseenter', () => {
     hoveredContainer = true;
+
   });
 
   contentContainer.addEventListener('mouseleave', () => {
@@ -90,9 +94,15 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   parents.forEach(parent => {
-  const id = parent.dataset.megaId + "1";
+    const id = parent.dataset.megaId + "1";
 
     parent.addEventListener('mouseenter', () => {
+      parentHovered = true;
+
+      if (lastHoveredParent && lastHoveredParent !== parent) {
+        lastHoveredParent.classList.remove('hovered');
+      }
+      parent.classList.add('hovered');
       // Hide any previously visible content
       if (activeMegaId && activeMegaId !== id) {
         document.querySelectorAll(`[data-mega-id="${activeMegaId}"]`).forEach(el => {
@@ -103,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
 
-      // Show the current submenu content
       document.querySelectorAll(`[data-mega-id="${id}"]`).forEach(el => {
         if (!el.classList.contains('original-hidden')) {
           if (el.classList.contains('sub-menu-item')) el.classList.add('visible');
@@ -112,6 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       activeMegaId = id;
+
+      lastHoveredParent = parent;
     });
 
     parent.addEventListener('mouseleave', () => {
@@ -123,9 +134,19 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
         activeMegaId = null;
+      } 
+      
+      if (!parentHovered && !hoveredContainer) {
+        parent.classList.remove('hovered');
+        parentHovered = false;
       }
     });
   });
+
+  const defaultHoverItem = parents[0];
+  if (defaultHoverItem) {
+    defaultHoverItem.dispatchEvent(new MouseEvent('mouseenter'));
+  }
 
 
 });

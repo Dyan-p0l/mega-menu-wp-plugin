@@ -21,6 +21,8 @@ function custom_mega_menu_register_settings() {
     register_setting('custom_megamenu_options', 'custom_megamenu_text_color');
     register_setting('custom_megamenu_options', 'custom_megamenu_bg_color:hover');
     register_setting('custom_megamenu_options', 'custom_megamenu_text_color:hover');
+    register_setting('custom_megamenu_options', 'custom_submenu_bg_color:hover');
+    register_setting('custom_megamenu_options', 'custom_submenu_text_color:hover');
 }
 
 function custom_mega_menu_render_settings_page() {
@@ -45,15 +47,27 @@ function custom_mega_menu_render_settings_page() {
                         class="color-picker" data-default-color="#000000" />
                 </div>
                 <div class="form-row">
-                    <label for="bg-color-hover">Background Color: Hovered</label>
+                    <label for="bg-color-hover">Main menu Background-color: Hovered</label>
                     <input type="text" id="bg-color-hover" name="custom_megamenu_bg_color:hover"
                         value="<?php echo esc_attr(get_option('custom_megamenu_bg_color:hover', '#000000')); ?>"
                         class="color-picker" data-default-color="#000000" />
                 </div>
                 <div class="form-row">
-                    <label for="text-color-hover">Text Color: Hovered</label>
+                    <label for="text-color-hover">Main menu Text Color: Hovered</label>
                     <input type="text" id="text-color-hover" name="custom_megamenu_text_color:hover"
                         value="<?php echo esc_attr(get_option('custom_megamenu_text_color:hover', '#000000')); ?>"
+                        class="color-picker" data-default-color="#000000" />
+                </div>
+                <div class="form-row">
+                    <label for="text-color-hover">Sub-menu Background Color: Hovered</label>
+                    <input type="text" id="submenu-bg-color-hover" name="custom_submenu_bg_color:hover"
+                        value="<?php echo esc_attr(get_option('custom_submenu_bg_color:hover', '#000000')); ?>"
+                        class="color-picker" data-default-color="#000000" />
+                </div>
+                <div class="form-row">
+                    <label for="text-color-hover">Sub-menu Text Color: Hovered</label>
+                    <input type="text" id="submenu-text-color-hover" name="custom_submenu_text_color:hover"
+                        value="<?php echo esc_attr(get_option('custom_submenu_text_color:hover', '#ffffffff')); ?>"
                         class="color-picker" data-default-color="#000000" />
                 </div>
             </div>
