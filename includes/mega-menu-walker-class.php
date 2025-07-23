@@ -67,29 +67,39 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
 
         $output .= esc_html($item->title) . '</a>';
 
-        if ($item->object === 'page' && $depth === 0 && $is_mega) {
+        if (($item->object === 'page') && ($depth === 0 || $depth === 1) || ($item->object === 'post')) {
 
             $page = get_post($item->object_id);
-
 
             if ($page && has_shortcode($page->post_content, 'skip-mega')) {
                 return;
             }
-            
+
             $rendered_content = apply_filters('the_content', $page->post_content);
-            
-            $indent = str_repeat("\t", $depth);
-            $output .= "\n$indent<div class=\"mega-menu-wrapper\">\n";
-            $output .= "$indent\t<div class=\"mega-menu\">\n";
-            $output .= "$indent\t\t<div class=\"mega-menu-content\">\n";
-            $output .= $rendered_content; // full page layout with structure
-            $output .= "$indent\t\t</div>\n";
-            $output .= "$indent\t</div>\n";
-            $output .= "$indent</div>\n";
+
+            $doc = new DOMDocument();
+            libxml_use_internal_errors(true);
+            $doc->loadHTML('<?xml encoding="utf-8" ?>' . $rendered_content);
+            libxml_clear_errors();
+
+            $finder = new DomXPath($doc);
+            $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' mega-menu-content ')]");
+
+            if ($nodes->length > 0) {
+                $content_html = '';
+                foreach ($nodes as $node) {
+                    $content_html .= $doc->saveHTML($node);
+                }
+
+                $indent = str_repeat("\t", $depth);
+                $output .= "$indent<div class=\"page-content\">\n";
+                $output .= $content_html;
+                $output .= "$indent</div>\n";
+            }
 
             return;
         }
-        
+
     }
  
     function end_lvl (&$output, $depth = 0, $args = null) {

@@ -5,13 +5,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const menuItemText = document.querySelectorAll('.menu-item-text');
   const itemTitle = document.querySelectorAll('.item-title');
   const contentContainer = document.querySelector('.mega-content-container');
+  const megaParents = document.querySelectorAll('.mega-parent');
   const parents = document.querySelectorAll('.sub-menu');
+  const pageContent = document.querySelectorAll('.page-content');
   
-
   let hoveredContainer = true;
   let activeMegaId = null;
   let parentHovered = false;
   let lastHoveredParent = null;
+
+  pageContent.forEach(content => {
+    const cont = content.closest('.mega-parent')?.querySelector('.mega-content-container');
+    cont.innerHTML = '';
+
+    if (cont){
+      cont.appendChild(content);
+      content.style.display = "none";
+    }
+  });
 
   images.forEach(img => {
     const container = img.closest('.mega-parent')?.querySelector('.mega-content-right');
@@ -76,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
   
   contentContainer.addEventListener('mouseenter', () => {
     hoveredContainer = true;
-
   });
 
   contentContainer.addEventListener('mouseleave', () => {
@@ -143,10 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const defaultHoverItem = parents[0];
-  if (defaultHoverItem) {
-    defaultHoverItem.dispatchEvent(new MouseEvent('mouseenter'));
-  }
-
+  megaParents.forEach(parent => {
+    parent.addEventListener('mouseenter', () => {
+      const defaultHoverItem = parent.querySelector('.sub-menu');
+      if (defaultHoverItem) defaultHoverItem.dispatchEvent(new MouseEvent('mouseenter'));
+    });
+  });
 
 });
