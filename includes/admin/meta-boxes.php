@@ -18,21 +18,21 @@ function custom_add_mega_menu_checkbox($item_id, $item, $depth, $args) {
 add_action('wp_nav_menu_item_custom_fields', 
 function ($item_id, $depth, $item,$args) {
 
-    // $is_mega = get_post_meta($item_id, '_custom_mega_menu', true);
+    $is_mega = get_post_meta($item_id, '_custom_mega_menu', true);
 
-    if ($depth === 1) return;
-    
+    $is_mega_attr = $is_mega == '1' ? 'data-is-mega="1"' : 'data-is-mega="0"';
+
     ?>
     <p class="description description-wide">
         <label>
-            <button type="button" class="configure_mega_menu_btn" data-item-id="<?php echo esc_attr($item_id); ?>" style="color: #ffffff; background-color:rgb(5, 70, 94); font-weight: bold; border-color:rgb(1, 13, 44); cursor: pointer">
+            <button type="button" class="configure_mega_menu_btn" data-item-id="<?php echo esc_attr($item_id); ?>" <?php echo $is_mega_attr; ?> style="color: #ffffff; background-color:rgb(5, 70, 94); font-weight: bold; border-color:rgb(1, 13, 44); cursor: pointer">
                 CONFIGURE MEGA-MENU
             </button>
         </label>
     </p>
 
     <?php
-}, 20, 4);
+}, 10, 4);
 
 add_action('wp_update_nav_menu_item', 'custom_save_mega_menu_checkbox', 10, 3);
 function custom_save_mega_menu_checkbox($menu_id, $menu_item_db_id, $args) {

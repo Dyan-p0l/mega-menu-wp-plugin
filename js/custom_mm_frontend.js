@@ -15,13 +15,28 @@ document.addEventListener('DOMContentLoaded', function () {
   let lastHoveredParent = null;
 
   pageContent.forEach(content => {
-    const cont = content.closest('.mega-parent')?.querySelector('.mega-content-container');
-    cont.innerHTML = '';
+    const contentMegaParent = content.closest('.mega-parent');
+    const cont = contentMegaParent?.querySelector('.mega-content-container');
+    const inner = content.querySelector('.mega-menu-content');
+    if (!cont && !contentMegaParent) return;    
+    
+    
+    if (!contentMegaParent.classList.contains('page-loaded')) {
+      const left = cont.querySelector('.mega-content-left');
+      const right = cont.querySelector('.mega-content-right');
+      if (left) left.remove();
+      if (right) right.remove();
 
-    if (cont){
-      cont.appendChild(content);
-      content.style.display = "none";
+      contentMegaParent.classList.add('page-loaded');
     }
+
+    if (!cont.contains(content)) {
+      cont.appendChild(content);
+    }
+
+    inner.style.display = 'none';
+    content.style.display = 'none';
+
   });
 
   images.forEach(img => {
@@ -94,9 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (activeMegaId) {
       document.querySelectorAll(`[data-mega-id="${activeMegaId}"]`).forEach(el => {
+        const inner = document.querySelector('.mega-menu-content');
+
         if (!el.classList.contains('original-hidden')) {
           if (el.classList.contains('sub-menu-item')) el.classList.remove('visible');
           el.style.display = 'none';
+          if (inner) inner.style.display = 'none'; 
         }
       });
       activeMegaId = null;
@@ -105,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   parents.forEach(parent => {
     const id = parent.dataset.megaId + "1";
-
+    
     parent.addEventListener('mouseenter', () => {
       parentHovered = true;
 
@@ -115,18 +133,23 @@ document.addEventListener('DOMContentLoaded', function () {
       parent.classList.add('hovered');
       // Hide any previously visible content
       if (activeMegaId && activeMegaId !== id) {
+        
         document.querySelectorAll(`[data-mega-id="${activeMegaId}"]`).forEach(el => {
+          const inner = el.querySelector('.mega-menu-content');
           if (!el.classList.contains('original-hidden')) {
             if (el.classList.contains('sub-menu-item')) el.classList.remove('visible');
             el.style.display = 'none';
+            if (inner) inner.style.display = 'none';
           }
         });
       }
 
       document.querySelectorAll(`[data-mega-id="${id}"]`).forEach(el => {
+        const inner = el.querySelector('.mega-menu-content');
         if (!el.classList.contains('original-hidden')) {
           if (el.classList.contains('sub-menu-item')) el.classList.add('visible');
           el.style.display = 'block';
+          if (inner) inner.style.display = 'flex';
         }
       });
 
@@ -138,13 +161,15 @@ document.addEventListener('DOMContentLoaded', function () {
     parent.addEventListener('mouseleave', () => {
       if (!hoveredContainer) {
         document.querySelectorAll(`[data-mega-id="${id}"]`).forEach(el => {
+          const inner = el.querySelector('.mega-menu-content');
           if (!el.classList.contains('original-hidden')) {
             if (el.classList.contains('sub-menu-item')) el.classList.remove('visible');
             el.style.display = 'none';
+            if (inner) inner.style.display = 'none';
           }
         });
         activeMegaId = null;
-      } 
+      }
       
       if (!parentHovered && !hoveredContainer) {
         parent.classList.remove('hovered');
@@ -153,9 +178,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  megaParents.forEach(parent => {
-    parent.addEventListener('mouseenter', () => {
-      const defaultHoverItem = parent.querySelector('.sub-menu');
+  //FOR DEFAULT HOVERED SUB-MENU
+  megaParents.forEach(megaparent => {
+    megaparent.addEventListener('mouseenter', () => {
+      const defaultHoverItem = megaparent.querySelector('.sub-menu');
       if (defaultHoverItem) defaultHoverItem.dispatchEvent(new MouseEvent('mouseenter'));
     });
   });

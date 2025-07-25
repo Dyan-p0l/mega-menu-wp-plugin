@@ -67,7 +67,7 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
 
         $output .= esc_html($item->title) . '</a>';
 
-        if (($item->object === 'page') && ($depth === 0 || $depth === 1) || ($item->object === 'post')) {
+        if (($item->object === 'page') && ($depth === 1) || ($item->object === 'post')) {
 
             $page = get_post($item->object_id);
 
@@ -84,6 +84,7 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
 
             $finder = new DomXPath($doc);
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' mega-menu-content ')]");
+            $data_attr_content = 'data-mega-id="' . esc_attr($unique_id) . '1"';
 
             if ($nodes->length > 0) {
                 $content_html = '';
@@ -92,8 +93,8 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
                 }
 
                 $indent = str_repeat("\t", $depth);
-                $output .= "$indent<div class=\"page-content\">\n";
-                $output .= $content_html;
+                $output .= "$indent<div class=\"page-content\" {$data_attr_content}>\n";
+                $output .= "$content_html\n";
                 $output .= "$indent</div>\n";
             }
 
@@ -101,7 +102,7 @@ class My_Mega_Menu_Walker extends Walker_Nav_Menu {
         }
 
     }
- 
+
     function end_lvl (&$output, $depth = 0, $args = null) {
         $indent = str_repeat("\t", $depth);
 
